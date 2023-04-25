@@ -1,6 +1,6 @@
-const login = require("../use-cases/users/index.js");
-const students = require("../use-cases/students/index.js");
-const professors = require("../use-cases/professors/index.js");
+// const login = require("../use-cases/users/index.js");
+const users = require("../use-cases/users/index.js");
+const couress = require("../use-cases/courses/index.js");
 const express = require("express");
 
 const router = express.Router();
@@ -15,16 +15,24 @@ function getController(func) {
         );
     }
 }
-router.get('/admin/student/:id', getController(students.getStudentByID));
-router.put('/admin/student/:id', getController(students.updateStudent));
-router.delete('/admin/student/:id', getController(students.deleteStudent));
-router.get('/admin/student', getController(students.getAllStudents));
-router.post('/admin/student', getController(students.createStudent));
+router.get('/admin/student/:id', getController(users.studentsUseCase.getStudentByID));
+router.put('/admin/student/:id', getController(users.studentsUseCase.updateStudent));
+router.delete('/admin/student/:id', getController(users.studentsUseCase.deleteStudent));
+router.get('/admin/student', getController(users.studentsUseCase.getAllStudents));
+router.post('/admin/student', getController(users.studentsUseCase.createStudent));
 
-router.get('/admin/professor/:id', getController(professors.getProfessorByID));
-router.put('/admin/professor/:id', getController(professors.updateProfessor));
-router.delete('/admin/professor/:id', getController(professors.deleteProfessor));
-router.get('/admin/professor', getController(professors.getAllProfessors));
-router.post('/admin/professor', getController(professors.createProfessor));
+router.get('/admin/professor/:id', getController(users.professorsUseCase.getProfessorByID));
+router.put('/admin/professor/:id', getController(users.professorsUseCase.updateProfessor));
+router.delete('/admin/professor/:id', getController(users.professorsUseCase.deleteProfessor));
+router.get('/admin/professor', getController(users.professorsUseCase.getAllProfessors));
+router.post('/admin/professor', getController(users.professorsUseCase.createProfessor));
+
+
+router.get('/courses', getController(couress.coursesUseCase.getAllCourses));
+router.get('/courses/:id', getController(couress.coursesUseCase.getCourseByID));
+router.post('/courses', getController(couress.coursesUseCase.createCourse));
+router.put('/courses/:id', getController(couress.coursesUseCase.updateCourse));
+router.delete('/courses/:id', getController(couress.coursesUseCase.deleteCourse));
+
 
 module.exports = router

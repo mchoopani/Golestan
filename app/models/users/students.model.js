@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
-const Student = mongoose.model(
+const User = require("./users.model.js");
+
+const Student = User.discriminator(
     "student",
     mongoose.Schema({
         grade: String,
@@ -8,7 +10,7 @@ const Student = mongoose.model(
         averageScore: Number,
         college: String,
         studyField: String,
-    }),
-);
+    })
+)
 
 module.exports = Student;
