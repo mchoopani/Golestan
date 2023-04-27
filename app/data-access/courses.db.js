@@ -1,6 +1,6 @@
 function makeCourseDb(Course) {
-    async function findAll() {
-        return await Course.find({});
+    async function findAll(filters) {
+        return await Course.find(filters);
     }
     async function findByID(id) {
         return await Course.findById(id);

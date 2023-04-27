@@ -12,8 +12,12 @@ async function createCourse(data) {
     throw Error("Invalid course type")
 }
 
-async function getAllCourses() {
-    return await accessDb.coursesDb.findAll();
+async function getAllCourses(params) {
+    filters = {}
+    if (params.field != undefined) {
+        filters.field = params.field
+    }
+    return await accessDb.coursesDb.findAll(filters);
 }
 
 async function updateCourse(id, data) {

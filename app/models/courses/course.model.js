@@ -4,8 +4,9 @@ const Course = mongoose.model(
     mongoose.Schema({
         name: String,
         prerequisites: [String],
-        coRequisites: [String],
+        corequisites: [String],
         unit: Number,
+        field: String,
     })
 );
 

@@ -5,7 +5,7 @@ async function createApprovedCourse(data) {
 }
 
 async function getAllApprovedCourses() {
-    return await accessDb.approvedCoursesDb.findAll();
+    return await accessDb.approvedCoursesDb.findAll(filters);
 }
 
 async function updateApprovedCourse(id, data) {

@@ -8,7 +8,7 @@ const router = express.Router();
 // router.get('/login', login);
 function getController(func) {
     return async (req, res) => {
-        (req.params.id != undefined?func(req.params.id, req.body):func(req.body)).then(
+        (req.params.id != undefined?func(req.params.id, req.body):(req.method=='POST'?func(req.body):func(req.query))).then(
             data => res.status(data != null? 200 : 404).send(data)
         ).catch(
             e => res.status(500).send(e.message)
