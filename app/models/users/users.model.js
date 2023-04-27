@@ -3,7 +3,7 @@ const User = mongoose.model(
     "user",
     mongoose.Schema({
         fullname: String,
-        usercode: String,
+        usercode: String, // TODO: make required
         password: String,
         email: String,
         phoneNumber: String,
