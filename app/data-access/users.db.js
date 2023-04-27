@@ -1,13 +1,14 @@
 function makeUsersDb(User) {
-  async function getByID(id) {
+  async function findByUsername(username) {
 
-    return await User.find({
-      usercode: "lkdsfj",
-    }).exec()
+    return await User.findOne({
+      usercode: username
+    });
   }
+
   return Object.freeze({
-    getByID,
-  });
+    findByUsername,
+  })
 }
 module.exports = makeUsersDb
 
