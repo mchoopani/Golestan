@@ -16,9 +16,9 @@ const login = () => {
                 username: user.username,
                 role: user.__t,
             }, "this is salt", {expiresIn: "1h"});
-            res.send({token:token})
+            return res.send({token:token})
         }
-        res.status(400).send({message: "username or password is wrong."})
+        return res.status(400).send({message: "username or password is wrong."})
     }
     
     router.post("/login", login);
@@ -45,6 +45,16 @@ const authMiddleware = (req, res, next) => {
 
     next();
 }
+
+function isStudentMiddleware (req, res, next) {
+    if (req.user.userType == "student") {
+        return next();
+    }
+    res.status(403).json({
+        message: "permission denied"
+    })
+}
+
 
 module.exports = Object.freeze({
     authMiddleware,
