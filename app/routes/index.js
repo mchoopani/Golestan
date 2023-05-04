@@ -27,6 +27,11 @@ router.delete('/admin/professor/:id', getController(users.professorsUseCase.dele
 router.get('/admin/professor', getController(users.professorsUseCase.getAllProfessors));
 router.post('/admin/professor', getController(users.professorsUseCase.createProfessor));
 
+router.get('/admin/manager/:id', getController(users.managersUseCase.getManagerByID));
+router.put('/admin/manager/:id', getController(users.managersUseCase.updateManager));
+router.delete('/admin/manager/:id', getController(users.managersUseCase.deleteManager));
+router.get('/admin/manager', getController(users.managersUseCase.getAllManagers));
+router.post('/admin/manager', getController(users.managersUseCase.createManager));
 
 router.get('/courses', getController(couress.coursesUseCase.getAllCourses));
 router.get('/courses/:id', getController(couress.coursesUseCase.getCourseByID));
