@@ -1,0 +1,1214 @@
+openapi: 3.0.0
+info:
+  description: This server writes with nodejs. You can use this api to create your golestan frontend.
+  version: "1.0.0"
+  title: Simple Inventory API
+  contact:
+    name: Mahmood Choopani
+    url: https://www.mchoopani.ir/support
+    email: contact@mchoopani.ir
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: it-manager
+    description: Allowd calls to it-manager
+  - name: professor
+    description: Operations available to professors
+  - name: student
+    description: Operations available to students
+  - name: manager
+    description: Operations available to managers
+    
+security:
+  - BearerAuth: []
+paths:
+
+  /login:
+    post:
+      security: []
+      tags:
+        - it-manager
+        - manager
+        - student
+        - professor
+      
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: mchoopani
+                password:
+                  type: string
+                  example: 123456
+        
+      responses:
+        '200':
+          description: successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: <A HASHED TOKEN>
+        '401':
+          description: login failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: username or password is wrong
+              
+    
+  /admin/student:
+    get:
+      tags:
+        - it-manager
+      summary: get all students
+      operationId: getAllStudents
+      description: |
+        Getting all students in one request.
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Student'
+        '400':
+          description: bad input parameter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: unauhtorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        
+    post:
+      tags:
+        - it-manager
+      summary: adds a student
+      operationId: addStudent
+      description: Adds an student to the system
+      responses:
+        '200':
+          description: student added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        '400':
+          description: 'validation error.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                
+        '401':
+          description: unauhtorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Student'
+              
+        description: student item to add
+        
+        
+  /admin/student/{id}:
+    put:
+      tags: 
+        - it-manager
+      summary: update a student
+      operationId: updateStudent
+      description: Updates a student with given id
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          example: 123876321acdf876f
+          required: true
+      
+      requestBody:
+        description: new student data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Student'
+      
+      responses:
+        '200':
+          description: student updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        '400':
+          description: 'validation error.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: student not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+                
+        '401':
+          description: unauhtorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+    delete:
+      tags: 
+        - it-manager
+      summary: delete a student
+      operationId: deleteStudent
+      description: Deletes a student with given id
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          example: 123876321acdf876f
+          required: true
+      
+      responses:
+        '200':
+          description: student updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        '404':
+          description: student not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+                
+        '401':
+          description: unauhtorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+    get:
+      tags: 
+        - it-manager
+      summary: get a student with given id
+      operationId: getStudent
+      description: Gets a student with given id
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          example: 123876321acdf876f
+          required: true
+      
+      responses:
+        '200':
+          description: student fetched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        '404':
+          description: student not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+                
+        '401':
+          description: unauhtorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+                
+  /admin/professor:
+    get:
+      tags:
+        - it-manager
+      summary: get all professor
+      operationId: getAllProfessors
+      description: |
+        Getting all professors in one request.
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Professor'
+        '400':
+          description: bad input parameter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                
+        '401':
+          description: unauhtorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        
+    post:
+      tags:
+        - it-manager
+      summary: adds a professor
+      operationId: addProfessor
+      description: Adds a professor to the system
+      responses:
+        '200':
+          description: professor added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Professor'
+        '400':
+          description: 'validation error.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                
+        '401':
+          description: unauhtorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Professor'
+        description: professor item to add
+  /admin/professor/{id}:
+    put:
+      tags: 
+        - it-manager
+      summary: update a professor
+      operationId: updateProfessor
+      description: Updates a student with given id
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          example: 123876321acdf876f
+          required: true
+      
+      requestBody:
+        description: new professor data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Professor'
+      
+      responses:
+        '200':
+          description: professor; updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Professor'
+        '400':
+          description: 'validation error.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: professor not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+                
+        '401':
+          description: unauhtorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+    delete:
+      tags: 
+        - it-manager
+      summary: delete a professor
+      operationId: deleteProfessor
+      description: Deletes a professor with given id
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          example: 123876321acdf876f
+          required: true
+      
+      responses:
+        '200':
+          description: professor updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Professor'
+        '404':
+          description: professor not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+                
+        '401':
+          description: unauhtorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+    get:
+      tags: 
+        - it-manager
+      summary: get a professor with given id
+      operationId: getProfessor
+      description: Gets a professor with given id
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          example: 123876321acdf876f
+          required: true
+      
+      responses:
+        '200':
+          description: prefessor fetched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Professor'
+        '404':
+          description: professor not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+                
+        '401':
+          description: unauhtorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+
+  /admin/manager:
+    get:
+      tags:
+        - it-manager
+      summary: get all manager
+      operationId: getAllManager
+      description: |
+        Getting all managers in one request.
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Manager'
+        '400':
+          description: bad input parameter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        
+        '401':
+          description: unauhtorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+    post:
+      tags:
+        - it-manager
+      summary: adds a manager
+      operationId: addManager
+      description: Adds a Manager to the system
+      responses:
+        '200':
+          description: Manager added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Manager'
+        '400':
+          description: 'validation error.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        
+        '401':
+          description: unauhtorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Manager'
+        description: Manager item to add
+  /admin/manager/{id}:
+    put:
+      tags: 
+        - it-manager
+      summary: update a Manager
+      operationId: updateManager
+      description: Updates a Manager with given id
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          example: 123876321acdf876f
+          required: true
+      
+      requestBody:
+        description: new Manager data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Manager'
+      
+      responses:
+        '200':
+          description: Manager updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Manager'
+        '400':
+          description: 'validation error.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Manager not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+        
+        '401':
+          description: unauhtorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+    delete:
+      tags: 
+        - it-manager
+      summary: delete a Manager
+      operationId: deleteManager
+      description: Deletes a Manager with given id
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          example: 123876321acdf876f
+          required: true
+      
+      responses:
+        '200':
+          description: Manager updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Manager'
+        '404':
+          description: Manager not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+        
+        '401':
+          description: unauhtorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+    get:
+      tags: 
+        - it-manager
+      summary: get a Manager with given id
+      operationId: getManager
+      description: Gets a Manager with given id
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          example: 123876321acdf876f
+          required: true
+      
+      responses:
+        '200':
+          description: Manager fetched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Manager'
+        '404':
+          description: Manager not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+                
+        
+        '401':
+          description: unauhtorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+
+  /courses:
+    get:
+      tags:
+        - professor
+        - student
+        - manager
+      summary: get all relevant courses
+      operationId: getAllCourses
+      parameters: 
+        - in: query
+          name: field
+          required: false
+          schema:
+            type: string
+            example: "computer"
+      description: |
+        Getting all courses in one request.
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '400':
+          description: bad input parameter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                
+        
+        '401':
+          description: unauhtorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+    post:
+      tags:
+        - manager
+      summary: create a courses
+      operationId: createCourse
+      description: |
+        create a course
+      responses:
+        '201':
+          description: course added.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '400':
+          description: bad input parameter or bad pre or co requisites courses id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                
+        
+        '401':
+          description: unauhtorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+                
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Course'
+  /courses/{id}:    
+    put:
+      tags: 
+        - manager
+      summary: update a course
+      operationId: updateCourse
+      description: Updates a course with given id
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          example: 123876321acdf876f
+          required: true
+      
+      requestBody:
+        description: new course data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Course'
+      
+      responses:
+        '200':
+          description: course updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '400':
+          description: 'validation error.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: course not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+                
+        
+        '401':
+          description: unauhtorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+    delete:
+      tags:
+        - manager
+      summary: delete a course
+      operationId: deleteCourse
+      description: Deletes a course with given id
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          example: 123876321acdf876f
+          required: true
+      
+      responses:
+        '200':
+          description: course updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '404':
+          description: course not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+                
+        '401':
+          description: unauhtorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+    get:
+      tags: 
+        - professor
+        - student
+        - manager
+      summary: get a course with given id
+      operationId: getCourse
+      description: Gets a course with given id
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          example: 123876321acdf876f
+          required: true
+      
+      responses:
+        '200':
+          description: course fetched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '404':
+          description: student not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+                
+        '401':
+          description: unauhtorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+  
+  /student:
+    get:
+      tags:
+        - manager
+      summary: get all students
+      operationId: getAllStudents2
+      description: |
+        Getting all students in one request.
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Student'
+        '400':
+          description: bad input parameter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                
+        '401':
+          description: unauhtorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+  /student/{id}:
+    put:
+      tags: 
+        - student
+      summary: update a student 
+      operationId: updateStudent2
+      description: Updates a student with given id
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          example: 123876321acdf876f
+          required: true
+      
+      requestBody:
+        description: new student data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Student'
+      
+      responses:
+        '200':
+          description: student updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        '400':
+          description: 'validation error.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: student not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+        '403':
+          description: student is not equal to requeter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbidenErrorResponse'
+                
+        '401':
+          description: unauhtorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+    get:
+      tags: 
+        - student
+        - manager
+      summary: get a student with given id
+      operationId: getStudent2
+      description: Gets a student with given id
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          example: 123876321acdf876f
+          required: true
+      
+      responses:
+        '200':
+          description: student fetched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        '404':
+          description: student not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+                
+        '401':
+          description: unauhtorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+                
+  /professor:
+    get:
+      tags:
+        - manager
+      summary: get all professor
+      operationId: getAllProfessors2
+      description: |
+        Getting all professors in one request.
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Professor'
+        '400':
+          description: bad input parameter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                
+        '401':
+          description: unauhtorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        
+  /professor/{id}:
+    put:
+      tags: 
+        - professor
+      summary: update a professor
+      operationId: updateProfessor2
+      description: Updates a student with given id
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          example: 123876321acdf876f
+          required: true
+      
+      requestBody:
+        description: new professor data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Professor'
+      
+      responses:
+        '200':
+          description: professor; updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Professor'
+        '400':
+          description: 'validation error.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: professor not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+        '403':
+          description: student is not equal to requeter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbidenErrorResponse'
+                
+        '401':
+          description: unauhtorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+    get:
+      tags: 
+        - professor
+      summary: get a professor with given id
+      operationId: getProfessor2
+      description: Gets a professor with given id
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          example: 123876321acdf876f
+          required: true
+      
+      responses:
+        '200':
+          description: prefessor fetched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Professor'
+        '404':
+          description: professor not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+        '403':
+          description: student is not equal to requeter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbidenErrorResponse'
+                
+        '401':
+          description: unauhtorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    User:
+      type: object
+      required: 
+        - usercode
+        - password
+      properties:
+        usercode:
+          type: string
+          minLength: 5
+          example: 99243031
+        password:
+          type: string
+          minLength: 5
+          example: 123456
+        fullname:
+          type: string
+          example: Mahmood Choopani
+        email: 
+          type: string
+          format: email
+        phoneNumber:
+          type: string
+          example: "09904614116"
+          
+        
+    Student:
+      allOf:
+        - $ref: '#/components/schemas/User'
+        - type: object
+          properties:
+            grade: 
+              type: string
+              example: "khafan"
+            joinDate: 
+              type: string
+              format: date
+              example: 2002-05-31
+            joinSemester: 
+              type: string
+              example: "400/401"
+            averageScore: 
+              type: number
+              example: 15.5
+            college: 
+              type: string
+              example: "computer"
+            studyField:
+              type: string
+              example: Engineering
+    
+         
+    Professor:
+      allOf:
+        - $ref: '#/components/schemas/User'
+        - type: object
+          properties:
+            grade: 
+              type: string
+              example: "khafan"
+            college: 
+              type: string
+              example: "computer"
+            studyField:
+              type: string
+              example: Engineering
+    
+         
+    Manager:
+      allOf:
+        - $ref: '#/components/schemas/User'
+        - type: object
+          properties:
+            college: 
+              type: string
+              example: "computer"
+          
+    Course:
+      type: object
+      required:
+        - courseType
+      
+      properties:
+      
+        name: 
+          type: string
+          example: DS
+        prerequisites: 
+          type: array
+          items:
+            $ref: '#/components/schemas/SemesterCourse'
+        corequisites: 
+          type: array
+          items:
+            $ref: '#/components/schemas/SemesterCourse'
+        unit: 
+          type: number
+          example: 3
+          
+        field: 
+          type: string
+          example: computer
+          
+        courseType:
+          type: string
+          enum:
+            - approved
+            - semester
+          default: approved
+      
+    SemesterCourse:
+      allOf:
+        - $ref: '#/components/schemas/Course'
+        - type: object
+          required: 
+            - courseType  
+          properties:
+            classDates: 
+              type: string
+              format: date
+              example: 2002-05-31
+            examDate: 
+              type: string
+              format: date
+              example: 2002-05-31
+            examPlace: 
+              type: string
+              example: Class 110
+            professorName: 
+              type: string
+              example: Mr folani
+            capacity: 
+              type: number
+              format: int32
+              example: 20
+            semester: 
+              type: string
+              example: 400/401
+    ErrorResponse:
+      properties:
+        message:
+          type: string
+          example: error message
+    ForbidenErrorResponse:
+      properties:
+        message:
+          type: string
+          example: you have not access to this resource
+    NotFoundErrorResponse:
+      properties:
+        message:
+          type: string
+          example: not found
+    UnauthorizedError:
+      properties:
+        message:
+          type: string
+          example: token is invalid.
