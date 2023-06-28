@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Course = require("./course.model");
+const Preregistration = require("../registration_requests/preregistration.model")
 const SemesterCourse = Course.discriminator(
     "semester_course",
     mongoose.Schema({
@@ -9,6 +10,7 @@ const SemesterCourse = Course.discriminator(
         professorName: String,
         capacity: Number,
         semester: String,
+        preregistrations: [{type: Preregistration.schema}]
     })
 )
 

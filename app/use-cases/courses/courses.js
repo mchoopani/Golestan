@@ -110,6 +110,9 @@ async function deleteCourse(id) {
 
 async function getCourseByID(requestedUser, id) {
     const course = await accessDb.coursesDb.findByID(id);
+    if (course == null) {
+        throw new errors.NotFoundError("course not found")
+    }
     const student = await accessDb.studentsDb.findByID(requestedUser._id);
     if (student && course.field != student.college) {
         throw new errors.PermissionError("you can't access to this course")
