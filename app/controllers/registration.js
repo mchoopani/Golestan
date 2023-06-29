@@ -12,10 +12,10 @@ async function acceptOrDenyRegistration(req, res) {
         }
         switch (data.action) {
             case "accept":
-                await registrationUseCase.acceptRegistration()
+                await registrationUseCase.acceptRegistration(req.params.id)
                 break;
             case "reject":
-                await registrationUseCase.rejectRegistration()
+                await registrationUseCase.rejectRegistration(req.params.id)
                 break;
             default:
                 throw new errors.InvalidArgumentError("invalid action")
@@ -178,7 +178,7 @@ async function getRegisteredCoursesOfTerm(req, res) {
                 courses = await registrationUseCase.getAllRegisteredCourses(req.params.id)
         }
         statusCode = 200
-        response = courses
+        response = {output: courses}
     } catch (err) {
         if (err instanceof errors.ValidationError ||
             err instanceof mongoose.Error.ValidationError ||

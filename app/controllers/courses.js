@@ -91,7 +91,7 @@ async function getCourseRegistrations(req, res) {
     let response = {}
     try {
         const course = await courseUseCase.coursesUseCase.getCourseByID(req.user, req.params.id);
-        response = course.registrations
+        response = {output: course.registrations}
         statusCode = 200
     } catch (err) {
         if (err instanceof errors.ValidationError || err instanceof mongoose.Error.ValidationError) {

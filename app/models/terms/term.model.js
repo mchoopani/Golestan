@@ -5,8 +5,9 @@ const Term = mongoose.model(
     mongoose.Schema({
         name: String,
         joinerCodes: [String],
-        preregistrationCourses: [{type: SemesterCourse.schema}],
-        registrationCourses: [{type: SemesterCourse.schema}]
+        preregistrationCourses: [{type: mongoose.Schema.Types.ObjectId, ref: 'Course'}],
+        registrationCourses: [{type: mongoose.Schema.Types.ObjectId, ref: 'Course'}]
     })
 )
+
 module.exports = Term

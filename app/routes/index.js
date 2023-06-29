@@ -48,7 +48,7 @@ router.get('/professor/:id', [isMangerMiddleware], controllerUtils.getController
 router.put('/student/:id', [isStudentMiddleWare], controllerUtils.getOwnAccessController(users.studentsUseCase.updateStudent, usersModels.Student));
 router.put('/professor/:id', [isProfessorMiddleware], controllerUtils.getOwnAccessController(users.professorsUseCase.updateProfessor, usersModels.Professor));
 
-router.get('/terms', [isUniRolesMiddleware], controllerUtils.getController(terms.getAllTerms))
+router.get('/terms', controllerUtils.getController(terms.getAllTerms))
 router.get('/terms/:id', [isMangerMiddleware], controllerUtils.getController(terms.getTermByID))
 router.post('/terms', [isMangerMiddleware], controllerUtils.getController(terms.createTerm))
 router.put('/terms/:id', [isMangerMiddleware], controllerUtils.getController(terms.updateTermById))
@@ -66,7 +66,7 @@ router.delete('/course/preregister/:id', [isStudentMiddleWare], controllers.regi
 router.delete('/terms/:id/preregistrations', [isStudentMiddleWare], controllers.registrations.getPreregisteredCoursesOfTerm)
 router.post('/course/register/:id', [isStudentMiddleWare], controllers.registrations.register)
 router.delete('/course/register/:id', [isStudentMiddleWare], controllers.registrations.cancelRegister)
-router.delete('/terms/:id/registrations', [isStudentMiddleWare], controllers.registrations.getRegisteredCoursesOfTerm)
-router.get('/course/:id/registrations', [isProfessorMiddleware], controllers.courses.getCourseRegistrations)
+router.get('/terms/:id/registrations'/*, [isStudentMiddleWare]*/, controllers.registrations.getRegisteredCoursesOfTerm)
+router.get('/courses/:id/registrations'/*, [isProfessorMiddleware]*/, controllers.courses.getCourseRegistrations)
 
 module.exports = router

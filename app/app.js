@@ -3,6 +3,7 @@ const router = require("./routes/index.js");
 const mongoose = require("mongoose");
 const auth = require("./middlewares/auth.js");
 const logger = require("./middlewares/logger.js");
+const cors = require("cors");
 require("dotenv").config()
 mongoose.connect(`mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST||"127.0.0.1"}:${process.env.DB_PORT||27017}/`)
 .then(()=>{
@@ -13,6 +14,7 @@ mongoose.connect(`mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 app.use(logger.getLogger());
 app.use(auth.login());
 app.use(auth.authMiddleware);
