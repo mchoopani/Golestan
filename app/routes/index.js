@@ -48,18 +48,25 @@ router.get('/professor/:id', [isMangerMiddleware], controllerUtils.getController
 router.put('/student/:id', [isStudentMiddleWare], controllerUtils.getOwnAccessController(users.studentsUseCase.updateStudent, usersModels.Student));
 router.put('/professor/:id', [isProfessorMiddleware], controllerUtils.getOwnAccessController(users.professorsUseCase.updateProfessor, usersModels.Professor));
 
-router.get('/terms', [isMangerMiddleware], controllerUtils.getController(terms.getAllTerms))
+router.get('/terms', [isUniRolesMiddleware], controllerUtils.getController(terms.getAllTerms))
 router.get('/terms/:id', [isMangerMiddleware], controllerUtils.getController(terms.getTermByID))
 router.post('/terms', [isMangerMiddleware], controllerUtils.getController(terms.createTerm))
 router.put('/terms/:id', [isMangerMiddleware], controllerUtils.getController(terms.updateTermById))
 router.delete('/terms/:id', [isMangerMiddleware], controllerUtils.getController(terms.deleteTermById))
 router.post('/terms/:id/preregistration', [isMangerMiddleware], controllers.terms.addPreregistrationCourse)
-router.get('/terms/:id/preregistration_courses', [isMangerMiddleware], controllers.terms.getPreregistrationCoursesOfTerm)
+router.get('/terms/:id/preregistration_courses', [isUniRolesMiddleware], controllers.terms.getPreregistrationCoursesOfTerm)
 router.delete('/terms/:id/preregistration/:course_id', [isMangerMiddleware], controllers.terms.deleteCourseFromPreregistrationCourseListOfTerm)
 router.post('/terms/:id/registration', [isMangerMiddleware], controllers.terms.addRegistrationCourse)
 router.get('/terms/:id/registration_courses', [isMangerMiddleware], controllers.terms.getRegistrationCoursesOfTerm)
 router.delete('/terms/:id/registration/:course_id', [isMangerMiddleware], controllers.terms.deleteCourseFromRegistrationCourseListOfTerm)
 router.get('/course/:id/preregistrations', [isMangerMiddleware], controllers.courses.getCoursePreregistrations)
 router.put('/registration/:id', [isProfessorMiddleware], controllers.registrations.acceptOrDenyRegistration)
+router.post('/course/preregister/:id', [isStudentMiddleWare], controllers.registrations.preregister)
+router.delete('/course/preregister/:id', [isStudentMiddleWare], controllers.registrations.cancelPreregister)
+router.delete('/terms/:id/preregistrations', [isStudentMiddleWare], controllers.registrations.getPreregisteredCoursesOfTerm)
+router.post('/course/register/:id', [isStudentMiddleWare], controllers.registrations.register)
+router.delete('/course/register/:id', [isStudentMiddleWare], controllers.registrations.cancelRegister)
+router.delete('/terms/:id/registrations', [isStudentMiddleWare], controllers.registrations.getRegisteredCoursesOfTerm)
+router.get('/course/:id/registrations', [isProfessorMiddleware], controllers.courses.getCourseRegistrations)
 
 module.exports = router

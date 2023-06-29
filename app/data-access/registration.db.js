@@ -8,6 +8,9 @@ function makeRegistrationDb(Registration) {
     async function deleteByID(id) {
         return await Registration.findByIdAndDelete(id);
     }
+    async function deleteOneByQuery(q) {
+        return await Registration.findOneAndDelete(q)
+    }
     async function updateByID(id, data) {
         return await Registration.findByIdAndUpdate(id, data);
     }
@@ -20,6 +23,7 @@ function makeRegistrationDb(Registration) {
         deleteByID,
         updateByID,
         create,
+        deleteOneByQuery,
     });
 }
 

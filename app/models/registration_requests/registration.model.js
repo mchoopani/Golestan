@@ -4,7 +4,7 @@ const RegistrationRequest = mongoose.model(
     "registration_request",
     mongoose.Schema({
         requestedStudent: Student.schema,
-        status: String, // TODO: make enum
+        status: {type: String, default: "pending"}, // TODO: make enum
     })
 )
 module.exports = RegistrationRequest

@@ -86,10 +86,33 @@ async function getCoursePreregistrations(req, res) {
     return res.status(statusCode).json(response)
 }
 
+async function getCourseRegistrations(req, res) {
+    let statusCode = undefined
+    let response = {}
+    try {
+        const course = await courseUseCase.coursesUseCase.getCourseByID(req.user, req.params.id);
+        response = course.registrations
+        statusCode = 200
+    } catch (err) {
+        if (err instanceof errors.ValidationError || err instanceof mongoose.Error.ValidationError) {
+            statusCode = 400
+            response = {message: err.message}
+        } else if(err instanceof errors.NotFoundError) {
+            statusCode = 404
+            response = {message: err.message}
+        } else {
+            statusCode = 500
+            console.log(`error ${err.name} occured with this message: ${err}`)
+            response = {message: err.message}
+        }
+    }
+    return res.status(statusCode).json(response)
+}
 
 module.exports = Object.freeze({
     getAllCourses,
     getCourse,
     createCourse,
     getCoursePreregistrations,
+    getCourseRegistrations,
 })

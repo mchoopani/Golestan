@@ -40,6 +40,169 @@ async function acceptOrDenyRegistration(req, res) {
     return res.status(statusCode).json(response)
 }
 
+async function preregister(req, res) {
+    let statusCode = undefined
+    let response = {}
+    try {
+        await registrationUseCase.createPreregistration(req.params.id, req.user.id)
+        statusCode = 201
+        response = {message: `preregistration created`}
+    } catch (err) {
+        if (err instanceof errors.ValidationError ||
+            err instanceof mongoose.Error.ValidationError ||
+            err instanceof errors.InvalidArgumentError) {
+            statusCode = 400
+            response = {message: err.message}
+        } else if (err instanceof errors.NotFoundError) {
+            statusCode = 404
+            response = {message: err.message}
+        } else {
+            statusCode = 500
+            console.log(`error ${err.name} occured with this message: ${err}`)
+            response = {message: err.message}
+        }
+    }
+    return res.status(statusCode).json(response)
+}
+
+async function cancelPreregister(req, res) {
+    let statusCode = undefined
+    let response = {}
+    try {
+        await registrationUseCase.cancelPreregistration(req.params.id, req.user.id)
+        statusCode = 200
+        response = {message: `preregistration deleted`}
+    } catch (err) {
+        if (err instanceof errors.ValidationError ||
+            err instanceof mongoose.Error.ValidationError ||
+            err instanceof errors.InvalidArgumentError) {
+            statusCode = 400
+            response = {message: err.message}
+        } else if (err instanceof errors.NotFoundError) {
+            statusCode = 404
+            response = {message: err.message}
+        } else {
+            statusCode = 500
+            console.log(`error ${err.name} occured with this message: ${err}`)
+            response = {message: err.message}
+        }
+    }
+    return res.status(statusCode).json(response)
+}
+
+async function getPreregisteredCoursesOfTerm(req, res) {
+    let statusCode = undefined
+    let response = {}
+    try {
+        const courses = await registrationUseCase.getPreregisteredCoursesOfStudent(req.user.id, req.params.id)
+        statusCode = 200
+        response = courses
+    } catch (err) {
+        if (err instanceof errors.ValidationError ||
+            err instanceof mongoose.Error.ValidationError ||
+            err instanceof errors.InvalidArgumentError) {
+            statusCode = 400
+            response = {message: err.message}
+        } else if (err instanceof errors.NotFoundError) {
+            statusCode = 404
+            response = {message: err.message}
+        } else {
+            statusCode = 500
+            console.log(`error ${err.name} occured with this message: ${err}`)
+            response = {message: err.message}
+        }
+    }
+    return res.status(statusCode).json(response)
+}
+
+async function register(req, res) {
+    let statusCode = undefined
+    let response = {}
+    try {
+        await registrationUseCase.createRegistration(req.params.id, req.user.id)
+        statusCode = 201
+        response = {message: `registration created`}
+    } catch (err) {
+        if (err instanceof errors.ValidationError ||
+            err instanceof mongoose.Error.ValidationError ||
+            err instanceof errors.InvalidArgumentError) {
+            statusCode = 400
+            response = {message: err.message}
+        } else if (err instanceof errors.NotFoundError) {
+            statusCode = 404
+            response = {message: err.message}
+        } else {
+            statusCode = 500
+            console.log(`error ${err.name} occured with this message: ${err}`)
+            response = {message: err.message}
+        }
+    }
+    return res.status(statusCode).json(response)
+}
+
+async function cancelRegister(req, res) {
+    let statusCode = undefined
+    let response = {}
+    try {
+        await registrationUseCase.cancelRegistration(req.params.id, req.user.id)
+        statusCode = 200
+        response = {message: `registration deleted`}
+    } catch (err) {
+        if (err instanceof errors.ValidationError ||
+            err instanceof mongoose.Error.ValidationError ||
+            err instanceof errors.InvalidArgumentError) {
+            statusCode = 400
+            response = {message: err.message}
+        } else if (err instanceof errors.NotFoundError) {
+            statusCode = 404
+            response = {message: err.message}
+        } else {
+            statusCode = 500
+            console.log(`error ${err.name} occured with this message: ${err}`)
+            response = {message: err.message}
+        }
+    }
+    return res.status(statusCode).json(response)
+}
+
+async function getRegisteredCoursesOfTerm(req, res) {
+    let statusCode = undefined
+    let response = {}
+    try {
+        let courses = []
+        switch (req.user.role) {
+            case "student":
+                courses = await registrationUseCase.getRegisteredCoursesOfStudent(req.user.id, req.params.id)
+                break;
+            case "professor":
+                courses = await registrationUseCase.getAllRegisteredCourses(req.params.id)
+        }
+        statusCode = 200
+        response = courses
+    } catch (err) {
+        if (err instanceof errors.ValidationError ||
+            err instanceof mongoose.Error.ValidationError ||
+            err instanceof errors.InvalidArgumentError) {
+            statusCode = 400
+            response = {message: err.message}
+        } else if (err instanceof errors.NotFoundError) {
+            statusCode = 404
+            response = {message: err.message}
+        } else {
+            statusCode = 500
+            console.log(`error ${err.name} occured with this message: ${err}`)
+            response = {message: err.message}
+        }
+    }
+    return res.status(statusCode).json(response)
+}
+
 module.exports = Object.freeze({
     acceptOrDenyRegistration,
+    preregister,
+    cancelPreregister,
+    getPreregisteredCoursesOfTerm,
+    register,
+    cancelRegister,
+    getRegisteredCoursesOfTerm,
 })
