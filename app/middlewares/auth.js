@@ -18,12 +18,22 @@ const login = () => {
                 role: user.__t,
                 college: user.college,
             }, process.env.AUTH_SALT, {expiresIn: `${process.env.AUTH_PASSWORD_EXPIRATION_HOURS || 1}h`});
-            return res.json({token:token})
+            return res.json({token:token, username: user.username, role: user.__t})
         }
         return res.status(401).json({message: "username or password is wrong."})
     }
+
+    const whoami = async (req, res) => {
+        try {
+            const user = jwt.verify(token, process.env.AUTH_SALT);
+            return res.status(200).json(user)
+        } catch (err) {
+            return res.status(401).json({message:"token is invalid."});
+        }
+    }
     
     router.post("/login", login);
+    router.get("/whoami", whoami);
 
     return router;
 };
@@ -39,8 +49,7 @@ const authMiddleware = (req, res, next) => {
     }
 
     try {
-        const decodedUserDictinoary = jwt.verify(token, process.env.AUTH_SALT);
-        req.user = decodedUserDictinoary;
+        req.user = jwt.verify(token, process.env.AUTH_SALT);
     } catch (err) {
         return res.status(401).json({message:"token is invalid."});
     }

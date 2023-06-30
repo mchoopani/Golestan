@@ -12,7 +12,23 @@ class PermissionError extends Error {
     }
 }
 
+class InvalidArgumentError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = "InvalidArgumentError";
+    }
+}
+
+class NotFoundError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = "NotFoundError";
+    }
+}
+
 module.exports = Object.freeze({
     ValidationError,
-    PermissionError
+    PermissionError,
+    InvalidArgumentError,
+    NotFoundError,
 })

@@ -7,7 +7,7 @@ function getController(func) {
             ?func(req.params.id, req.body)
             :(req.method=='POST'?func(req.body):func(req.query)))
         .then(
-            data => res.status(data != null? 200 : 404).json(data != null?data:{})
+            data => res.status(data != null? 200 : 404).json({output: data != null?data:{}})
         ).catch(
             e => {
                 if (e instanceof mongoose.Error.ValidationError || e instanceof errors.ValidationError) {
