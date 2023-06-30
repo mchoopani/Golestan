@@ -69,7 +69,7 @@ async function cancelPreregister(req, res) {
     let statusCode = undefined
     let response = {}
     try {
-        await registrationUseCase.cancelPreregistration(req.params.id, req.user.id)
+        await registrationUseCase.cancelPreregistration(req.params.id, req.user.id, req.user.username)
         statusCode = 200
         response = {message: `preregistration deleted`}
     } catch (err) {
@@ -94,9 +94,12 @@ async function getPreregisteredCoursesOfTerm(req, res) {
     let statusCode = undefined
     let response = {}
     try {
-        const courses = await registrationUseCase.getPreregisteredCoursesOfStudent(req.user.id, req.params.id)
+        let preregs = await registrationUseCase.getPreregisteredCoursesOfTerm(req.user.id, req.params.id)
+        if (req.query.registered) {
+            preregs = preregs.filter(prereg=>prereg.registered_before)
+        }
         statusCode = 200
-        response = courses
+        response = {output: preregs || []}
     } catch (err) {
         if (err instanceof errors.ValidationError ||
             err instanceof mongoose.Error.ValidationError ||
@@ -172,13 +175,16 @@ async function getRegisteredCoursesOfTerm(req, res) {
         let courses = []
         switch (req.user.role) {
             case "student":
-                courses = await registrationUseCase.getRegisteredCoursesOfStudent(req.user.id, req.params.id)
+                courses = await registrationUseCase.getRegisteredCoursesOfTerm(req.user.id, req.params.id)
+                if (req.query.registered) {
+                    courses = courses.filter(prereg=>prereg.registered_before)
+                }
                 break;
             case "professor":
                 courses = await registrationUseCase.getAllRegisteredCourses(req.params.id)
         }
         statusCode = 200
-        response = {output: courses}
+        response = {output: courses || []}
     } catch (err) {
         if (err instanceof errors.ValidationError ||
             err instanceof mongoose.Error.ValidationError ||

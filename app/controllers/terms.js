@@ -59,7 +59,7 @@ async function deleteCourseFromPreregistrationCourseListOfTerm(req, res) {
     try {
         await termUseCase.deletePreregistrationCourseFromTerm(req.params.id, req.params.course_id)
         statusCode = 200
-        response = {message: "course added to preregistration"}
+        response = {message: "course deleted from preregistration"}
     } catch (err) {
         if (err instanceof errors.ValidationError ||
             err instanceof mongoose.Error.ValidationError ||

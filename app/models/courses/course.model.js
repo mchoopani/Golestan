@@ -7,7 +7,6 @@ const Course = mongoose.model(
         corequisites: [this],
         unit: Number,
         field: String,
-        registrations: [{type: mongoose.Schema.Types.ObjectId, ref: 'registration_request'}]
     })
 );
 

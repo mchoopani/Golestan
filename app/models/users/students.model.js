@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const User = require("./users.model.js");
-const Course = require("../courses/semester_course.model")
 const Student = User.discriminator(
     "student",
     mongoose.Schema({
@@ -10,8 +9,8 @@ const Student = User.discriminator(
         averageScore: Number,
         college: String,
         studyField: String,
-        preregistrationCourses: [Course.schema],
-        registrationCourses: [Course.schema]
+        preregistrationCourses: [{type: mongoose.Schema.Types.ObjectId, ref: 'course'}],
+        registrationCourses: [{type: mongoose.Schema.Types.ObjectId, ref: 'course'}]
     })
 )
 

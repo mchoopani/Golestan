@@ -1,9 +1,9 @@
 function makeTermDb(Term) {
     async function findAll() {
-        return await Term.find({});
+        return await Term.find({}).populate('preregistrationCourses').populate('registrationCourses');
     }
     async function findByID(id) {
-        return await Term.findById(id);
+        return await Term.findById(id).populate('registrationCourses').populate('preregistrationCourses');
     }
     async function deleteByID(id) {
         return await Term.findByIdAndDelete(id);

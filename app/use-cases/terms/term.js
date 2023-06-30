@@ -50,7 +50,7 @@ async function deletePreregistrationCourseFromTerm(termId, course_id) {
     }
     let toDeleteIndex = undefined
     for (let i = 0; i < term.preregistrationCourses.length; i++) {
-        if (term.preregistrationCourses[i]._id === course_id) {
+        if (String(term.preregistrationCourses[i]._id) === course_id) {
             toDeleteIndex = i
             break
         }
@@ -58,7 +58,7 @@ async function deletePreregistrationCourseFromTerm(termId, course_id) {
     if (toDeleteIndex === undefined) {
         throw new errors.NotFoundError("course not found")
     }
-    term.preregistrationCourses = term.preregistrationCourses.splice(toDeleteIndex, 1)
+    term.preregistrationCourses.splice(toDeleteIndex, 1)
     await accessDb.termsDb.updateByID(termId, term)
 }
 
@@ -77,7 +77,7 @@ async function deleteRegistrationCourseFromTerm(termId, course_id) {
     if (toDeleteIndex === undefined) {
         throw new errors.NotFoundError("course not found")
     }
-    term.registrationCourses = term.registrationCourses.splice(toDeleteIndex, 1)
+    term.registrationCourses.splice(toDeleteIndex, 1)
     await accessDb.termsDb.updateByID(termId, term)
 }
 
