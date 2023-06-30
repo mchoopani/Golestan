@@ -94,9 +94,17 @@ async function getPreregisteredCoursesOfTerm(req, res) {
     let statusCode = undefined
     let response = {}
     try {
-        let preregs = await registrationUseCase.getPreregisteredCoursesOfTerm(req.user.id, req.params.id)
-        if (req.query.registered) {
-            preregs = preregs.filter(prereg=>prereg.registered_before)
+        let preregs
+        switch (req.user.role) {
+            case "student":
+                preregs = await registrationUseCase.getPreregisteredCoursesOfTerm(req.user.id, req.params.id)
+                if (req.query.registered) {
+                    preregs = preregs.filter(prereg=>prereg.registered_before)
+                }
+                break;
+            case "manager":
+            case "professor":
+                preregs = await registrationUseCase.getAllPreRegisteredCourses(req.params.id)
         }
         statusCode = 200
         response = {output: preregs || []}
@@ -180,6 +188,7 @@ async function getRegisteredCoursesOfTerm(req, res) {
                     courses = courses.filter(prereg=>prereg.registered_before)
                 }
                 break;
+            case "manager":
             case "professor":
                 courses = await registrationUseCase.getAllRegisteredCourses(req.params.id)
         }

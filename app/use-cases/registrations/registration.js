@@ -23,7 +23,7 @@ async function createPreregistration(courseId, studentId) {
         throw new errors.NotFoundError("course not found")
     }
     for (const prereg of course.preregistrations) {
-        if (prereg.requestedStudent._id === studentId) {
+        if (prereg.requestedStudent/*._id*/ === studentId) {
             throw new errors.ValidationError("student pre registered before")
         }
     }
@@ -31,7 +31,7 @@ async function createPreregistration(courseId, studentId) {
     if (student == null) {
         throw new Error("internal error in finding current student")
     }
-    const reg = await accessDb.preregistrationDb.create({requestedStudent: student})
+    const reg = await accessDb.preregistrationDb.create({requestedStudent: student._id})
     course.preregistrations.push(reg)
     await accessDb.semesterCoursesDb.updateByID(courseId, course)
     student.preregistrationCourses.push(course._id)
@@ -44,7 +44,7 @@ async function createRegistration(courseId, studentId) {
         throw new errors.NotFoundError("course not found")
     }
     for (const prereg of course.registrations) {
-        if (prereg.requestedStudent.id === studentId) {
+        if (prereg.requestedStudent/*.id*/ === studentId) {
             throw new errors.ValidationError("student registered before")
         }
     }
@@ -52,7 +52,7 @@ async function createRegistration(courseId, studentId) {
     if (student == null) {
         throw new Error("internal error in finding current student")
     }
-    const reg = await accessDb.registrationDb.create({requestedStudent: student})
+    const reg = await accessDb.registrationDb.create({requestedStudent: student._id})
     course.registrations.push(reg)
     await accessDb.semesterCoursesDb.updateByID(courseId, course)
     student.registrationCourses.push(course)
@@ -67,7 +67,7 @@ async function cancelPreregistration(courseId, studentId, usercode) {
     let toDeleteIndex = undefined
     for (let i = 0; i < course.preregistrations.length; i++) {
         const prereg = course.preregistrations[i]
-        if (String(prereg.requestedStudent.id) === studentId) {
+        if (String(prereg.requestedStudent/*.id*/) === studentId) {
             toDeleteIndex = i
             break
         }
@@ -88,7 +88,7 @@ async function cancelPreregistration(courseId, studentId, usercode) {
     toDeleteIndex = undefined
     for (let i = 0; i < allPrereg.length; i++) {
         const prereg = allPrereg[i]
-        if (String(prereg.requestedStudent.id) === studentId) {
+        if (String(prereg.requestedStudent/*.id*/) === studentId) {
             toDeleteIndex = i
             break
         }
@@ -127,7 +127,7 @@ async function cancelRegistration(courseId, studentId) {
     let toDeleteIndex = undefined
     for (let i = 0; i < course.registrations.length; i++) {
         const reg = course.registrations[i]
-        if (reg.requestedStudent.id === studentId) {
+        if (reg.requestedStudent/*.id*/ === studentId) {
             toDeleteIndex = i
             break
         }
@@ -188,7 +188,7 @@ async function getPreregisteredCoursesOfTerm(studentId, termId) {
         throw new errors.NotFoundError("term not found")
     }
     return term.preregistrationCourses.map(element => {
-        const userIds = element.preregistrations.map(req => String(req.requestedStudent._id))
+        const userIds = element.preregistrations.map(req => String(req.requestedStudent/*._id*/))
         return {...element._doc, registered_before: userIds.includes(studentId)}
     })
 }
@@ -204,7 +204,7 @@ async function getRegisteredCoursesOfTerm(studentId, termId) {
         throw new errors.NotFoundError("term not found")
     }
     return term.registrationCourses.map(element => {
-        const userIds = element.registrations.map(req => String(req.requestedStudent._id))
+        const userIds = element.registrations.map(req => String(req.requestedStudent/*._id*/))
         return {...element._doc, registered_before: userIds.includes(studentId)}
     })
 }
@@ -218,6 +218,15 @@ async function getAllRegisteredCourses(termId) {
     return term.registrationCourses
 }
 
+async function getAllPreRegisteredCourses(termId) {
+    const term = await accessDb.termsDb.findByID(termId)
+    if (term === null) {
+        throw new errors.NotFoundError("term not found")
+    }
+
+    return term.preregistrationCourses
+}
+
 module.exports = Object.freeze({
     acceptRegistration,
     rejectRegistration,
@@ -228,4 +237,5 @@ module.exports = Object.freeze({
     cancelRegistration,
     getRegisteredCoursesOfTerm,
     getAllRegisteredCourses,
+    getAllPreRegisteredCourses,
 })

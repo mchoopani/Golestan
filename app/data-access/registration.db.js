@@ -1,9 +1,9 @@
 function makeRegistrationDb(Registration) {
     async function findAll() {
-        return await Registration.find({});
+        return await Registration.find({}).populate('requestedStudent');
     }
     async function findByID(id) {
-        return await Registration.findById(id);
+        return await Registration.findById(id).populate('requestedStudent');
     }
     async function deleteByID(id) {
         return await Registration.findByIdAndDelete(id);
