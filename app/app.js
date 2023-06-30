@@ -11,6 +11,7 @@ mongoose.connect(`mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD
 }).catch(err =>{
     console.log("error in connection to database", err.message)
 })
+mongoose.set('debug', true);
 
 const app = express();
 app.use(express.json());

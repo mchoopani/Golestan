@@ -3,6 +3,7 @@ const Course = mongoose.model(
     "course",
     mongoose.Schema({
         name: String,
+        x: [String],
         prerequisites: [this],
         corequisites: [this],
         unit: Number,

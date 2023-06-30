@@ -1,11 +1,21 @@
 const accessDb = require("../../data-access");
 const errors = require("../../errors");
+const mongoose = require('mongoose');
+const { ObjectId } = require('mongodb');
 
 async function acceptRegistration(id) {
     const reg = await accessDb.registrationDb.updateByID(id, {status: "accept"})
     if (reg == null) {
         throw new errors.NotFoundError("registration not found")
     }
+    await accessDb.semesterCoursesDb.updateByQuery({
+        _id: new ObjectId(reg.course.id),
+        'registrations._id': new ObjectId(id)
+    }, {
+        'registrations.$.status': "accept"
+    })
+
+
     return reg
 }
 
@@ -14,6 +24,13 @@ async function rejectRegistration(id) {
     if (reg == null) {
         throw new errors.NotFoundError("registration not found")
     }
+    await accessDb.semesterCoursesDb.updateByQuery({
+        _id: new ObjectId(reg.course.id),
+        'registrations._id': new ObjectId(id)
+    }, {
+        'registrations.$.status': "reject"
+    })
+
     return reg
 }
 
@@ -23,7 +40,7 @@ async function createPreregistration(courseId, studentId) {
         throw new errors.NotFoundError("course not found")
     }
     for (const prereg of course.preregistrations) {
-        if (prereg.requestedStudent/*._id*/ === studentId) {
+        if (String(prereg.requestedStudent)/*._id*/ === studentId) {
             throw new errors.ValidationError("student pre registered before")
         }
     }
@@ -31,7 +48,7 @@ async function createPreregistration(courseId, studentId) {
     if (student == null) {
         throw new Error("internal error in finding current student")
     }
-    const reg = await accessDb.preregistrationDb.create({requestedStudent: student._id})
+    const reg = await accessDb.preregistrationDb.create({requestedStudent: student._id, course: course._id})
     course.preregistrations.push(reg)
     await accessDb.semesterCoursesDb.updateByID(courseId, course)
     student.preregistrationCourses.push(course._id)
@@ -44,7 +61,7 @@ async function createRegistration(courseId, studentId) {
         throw new errors.NotFoundError("course not found")
     }
     for (const prereg of course.registrations) {
-        if (prereg.requestedStudent/*.id*/ === studentId) {
+        if (String(prereg.requestedStudent)/*.id*/ === studentId) {
             throw new errors.ValidationError("student registered before")
         }
     }
@@ -52,7 +69,7 @@ async function createRegistration(courseId, studentId) {
     if (student == null) {
         throw new Error("internal error in finding current student")
     }
-    const reg = await accessDb.registrationDb.create({requestedStudent: student._id})
+    const reg = await accessDb.registrationDb.create({requestedStudent: student._id, course: course._id})
     course.registrations.push(reg)
     await accessDb.semesterCoursesDb.updateByID(courseId, course)
     student.registrationCourses.push(course)
@@ -127,7 +144,7 @@ async function cancelRegistration(courseId, studentId) {
     let toDeleteIndex = undefined
     for (let i = 0; i < course.registrations.length; i++) {
         const reg = course.registrations[i]
-        if (reg.requestedStudent/*.id*/ === studentId) {
+        if (String(reg.requestedStudent)/*.id*/ === studentId) {
             toDeleteIndex = i
             break
         }
@@ -145,7 +162,7 @@ async function cancelRegistration(courseId, studentId) {
     toDeleteIndex = undefined
     for (let i = 0; i < allReg.length; i++) {
         const reg = allReg[i]
-        if (String(reg.requestedStudent.id) === studentId) {
+        if (String(reg.requestedStudent._id) === studentId) {
             toDeleteIndex = i
             break
         }

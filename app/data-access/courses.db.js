@@ -1,9 +1,9 @@
 function makeCourseDb(Course) {
     async function findAll(filters) {
-        return await Course.find(filters).populate('registrations');
+        return await Course.find(filters).populate('registrations.requestedStudent');
     }
     async function findByID(id) {
-        return await Course.findById(id).populate('registrations');
+        return await Course.findById(id).populate('registrations.requestedStudent');
     }
     async function deleteByID(id) {
         return await Course.findByIdAndDelete(id);
@@ -11,6 +11,10 @@ function makeCourseDb(Course) {
 
     async function updateByID(id, data) {
         return await Course.findByIdAndUpdate(id, data);
+    }
+
+    async function updateByQuery(q, data) {
+        return await Course.findOneAndUpdate(q, data);
     }
 
     async function create(data) {
@@ -32,6 +36,7 @@ function makeCourseDb(Course) {
         updateByID,
         create,
         findBatchCourseByBatchID,
+        updateByQuery,
     })
 }
 

@@ -114,7 +114,7 @@ async function getCourseByID(requestedUser, id) {
         throw new errors.NotFoundError("course not found")
     }
     const student = await accessDb.studentsDb.findByID(requestedUser._id);
-    if (student && course.field != student.college) {
+    if (student && course.field !== student.college) {
         throw new errors.PermissionError("you can't access to this course")
     }
     return course;

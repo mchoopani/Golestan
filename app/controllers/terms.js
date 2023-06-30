@@ -88,7 +88,7 @@ async function addRegistrationCourse(req, res) {
         if (data.courseId === undefined) {
             throw new errors.InvalidArgumentError("invalid or empty course id")
         }
-        const course = await courseUseCase.getCourseByID(data.courseId)
+        const course = await courseUseCase.getCourseByID(req.user, data.courseId)
         await termUseCase.addRegistrationCourseToTerm(req.params.id, course) // TODO
         statusCode = 200
         response = {message: "course added to registration"}

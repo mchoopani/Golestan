@@ -13,6 +13,10 @@ function makeSemesterCourseDb(SemesterCourse) {
         return await SemesterCourse.findByIdAndUpdate(id, data);
     }
 
+    async function updateByQuery(q, data) {
+        return await SemesterCourse.findOneAndUpdate(q, data);
+    }
+
     async function create(data) {
         return await SemesterCourse.create(data);
     }
@@ -23,6 +27,7 @@ function makeSemesterCourseDb(SemesterCourse) {
         deleteByID,
         updateByID,
         create,
+        updateByQuery,
     })
 }
 
