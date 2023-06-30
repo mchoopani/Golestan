@@ -1,9 +1,8 @@
 const mongoose = require("mongoose")
-const Student = require("../users/students.model")
 const RegistrationRequest = mongoose.model(
     "registration_request",
     mongoose.Schema({
-        requestedStudent: Student.schema,
+        requestedStudent: {type: mongoose.Schema.Types.ObjectId, ref: 'student'},
         status: {type: String, default: "pending"}, // TODO: make enum
     })
 )

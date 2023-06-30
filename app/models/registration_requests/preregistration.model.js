@@ -4,7 +4,7 @@ const Student = require("../users/students.model")
 const PreRegistrationRequest = mongoose.model(
     "preregistration_request",
     mongoose.Schema({
-        requestedStudent: Student.schema,
+        requestedStudent: {type: mongoose.Schema.Types.ObjectId, ref: 'student'},
         // course: Course.schema,
     })
 )

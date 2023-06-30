@@ -11,7 +11,7 @@ async function addPreregistrationCourse(req, res) {
         if (data.courseId === undefined) {
             throw new errors.InvalidArgumentError("invalid or empty course id")
         }
-        const course = await courseUseCase.getCourseByID(data.courseId)
+        const course = await courseUseCase.getCourseByID(req.user, data.courseId)
         await termUseCase.addPreregistrationCourseToTerm(req.params.id, course)
         statusCode = 200
         response = {message: "course added to preregistration"}
@@ -58,6 +58,7 @@ async function deleteCourseFromPreregistrationCourseListOfTerm(req, res) {
     let response = {}
     try {
         await termUseCase.deletePreregistrationCourseFromTerm(req.params.id, req.params.course_id)
+        await courseUseCase.deleteCourse(req.params.course_id)
         statusCode = 200
         response = {message: "course deleted from preregistration"}
     } catch (err) {
@@ -140,6 +141,7 @@ async function deleteCourseFromRegistrationCourseListOfTerm(req, res) {
     let response = {}
     try {
         await termUseCase.deleteRegistrationCourseFromTerm(req.params.id, req.params.course_id)
+        await courseUseCase.deleteCourse(req.params.course_id)
         statusCode = 200
         response = {message: "course added to registration"}
     } catch (err) {
