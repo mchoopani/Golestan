@@ -2,6 +2,8 @@
 const users = require("../use-cases/users/index.js");
 const couress = require("../use-cases/courses/index.js");
 const terms = require("../use-cases/terms/term.js")
+const colleges = require("../use-cases/users/colleges.js");
+const semesters = require("../use-cases/users/semesters.js");
 const express = require("express");
 const controllerUtils = require("../controllers/utils.js");
 const controllers = require("../controllers/index.js")
@@ -21,6 +23,8 @@ router.put('/admin/student/:id', [isITMangerMiddleware], controllerUtils.getCont
 router.delete('/admin/student/:id', [isITMangerMiddleware], controllerUtils.getController(users.studentsUseCase.deleteStudent));
 router.get('/admin/student', [isITMangerMiddleware], controllerUtils.getController(users.studentsUseCase.getAllStudents));
 router.post('/admin/student', [isITMangerMiddleware], controllerUtils.getController(users.studentsUseCase.createStudent));
+router.get('/admin/colleges'/*, [isITMangerMiddleware]*/, controllerUtils.getController(colleges.getAll));
+router.get('/admin/semesters'/*, [isITMangerMiddleware]*/, controllerUtils.getController(semesters.getAll));
 
 router.get('/admin/professor/:id', [isITMangerMiddleware], controllerUtils.getController(users.professorsUseCase.getProfessorByID));
 router.put('/admin/professor/:id', [isITMangerMiddleware], controllerUtils.getController(users.professorsUseCase.updateProfessor));

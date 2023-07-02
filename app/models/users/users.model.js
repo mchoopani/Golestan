@@ -7,7 +7,6 @@ const User = mongoose.model(
             type: String,
             required: true,
             minLength: 5,
-            unique: true,
         },
         password: {
             type: String,
