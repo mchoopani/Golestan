@@ -18,7 +18,9 @@ mongoose.set('debug', true);
 let redisClient;
 
 (async () => {
-    redisClient = redis.createClient();
+    redisClient = redis.createClient({
+        url: `redis://${process.env.REDIS_HOST || "localhost"}:${process.env.REDIS_PORT||6379}`
+    });
 
     redisClient.on("error", (error) => console.error(`Error : ${error}`));
 

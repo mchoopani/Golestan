@@ -4,7 +4,13 @@ volumes:
     driver: local
 
 services:
-
+  golestan:
+    image: golestan
+    environment:
+      - DB_HOST=mongo
+      - REDIS_HOST=redis
+    ports:
+      - '8090:8090'
   redis:
     image: docker.io/bitnami/redis:7.0
     environment:
